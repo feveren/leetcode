@@ -10,6 +10,10 @@ public class TopK {
         int[] array = {3, 4, 1, 5, 7, 2, 0};
         helper.topK(array, 4);
         System.out.println(Arrays.toString(array));
+
+        array = new int[] {3, 4, 1, 5, 7, 2, 0, 4};
+        helper.topKQuickSort(array, 3);
+        System.out.println(Arrays.toString(array));
     }
 
     public void topK(int[] array, int k) {
@@ -41,15 +45,48 @@ public class TopK {
         int left = (i << 1) + 1;
         int right = left + 1;
         int small = i;
-        if (left < length && array[small] > array[left]) {
+        if (left < length && array[small] >= array[left]) {
             small = left;
         }
-        if (right < length && array[small] > array[right]) {
+        if (right < length && array[small] >= array[right]) {
             small = right;
         }
         if (small != i) {
             ArrayUtils.swap(array, small, i);
             heapify(array, length, small);
         }
+    }
+
+    public void topKQuickSort(int[] array, int k) {
+        int start = 0;
+        int end = array.length - 1;
+        while (true) {
+            int partition = partition(array, start, end);
+            if (partition > k) {
+                end = partition - 1;
+            } else if (partition < k) {
+                start = partition + 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private int partition(int[] array, int start, int end) {
+        int target = array[start];
+        int left = start;
+        int right = end;
+        while (left < right) {
+            while (left < right && array[right] <= target) {
+                right--;
+            }
+            array[left] = array[right];
+            while (left < right && array[left] >= target) {
+                left++;
+            }
+            array[right] = array[left];
+        }
+        array[left] = target;
+        return left;
     }
 }
