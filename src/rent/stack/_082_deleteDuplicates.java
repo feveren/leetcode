@@ -29,17 +29,17 @@ public class _082_deleteDuplicates {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
         ListNode slow = dummy;
-        ListNode fast = head;
+        ListNode fast = dummy.next;
         while (fast != null && fast.next != null) {
             if (slow.next.val != fast.next.val) {
                 slow = slow.next;
                 fast = fast.next;
             } else {
-                while (slow.next.val == fast.next.val) {
+                while (fast.next != null && slow.next.val == fast.next.val) {
                     fast = fast.next;
                 }
-                slow.next = fast.next;
                 fast = fast.next;
+                slow.next = fast;
             }
         }
         return dummy.next;
