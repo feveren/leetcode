@@ -1,4 +1,4 @@
-package rent.stack;
+package rent.linkedlist;
 
 import rent.model.ListNode;
 import rent.utils.NodeUtils;

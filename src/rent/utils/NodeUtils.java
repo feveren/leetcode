@@ -26,4 +26,14 @@ public class NodeUtils {
         }
         return head;
     }
+
+    public static ListNode findNode(ListNode node, int val) {
+        while (node != null) {
+            if (node.val == val) {
+                return node;
+            }
+            node = node.next;
+        }
+        return null;
+    }
 }

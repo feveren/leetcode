@@ -1,4 +1,4 @@
-package rent.stack;
+package rent.linkedlist;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
