@@ -59,25 +59,19 @@ public class _150_evalRPN {
         }
         LinkedList<Integer> stack = new LinkedList<>();
         for (String token : tokens) {
-            if (isSymbol(token)) {
+            if (isNum(token)) {
+                stack.push(Integer.parseInt(token));
+            } else {
                 int result = calc(stack, token);
                 stack.push(result);
-            } else {
-                stack.push(parseNum(token));
             }
         }
         return stack.pop();
     }
 
-    private int parseNum(String s) {
-        return Integer.parseInt(s);
-    }
-
-    private boolean isSymbol(String s) {
-        return "+".equals(s)
-                || "-".equals(s)
-                || "*".equals(s)
-                || "/".equals(s);
+    private boolean isNum(String s) {
+        char c = s.charAt(s.length() - 1);
+        return c >= '0' && c <= '9';
     }
 
     private int calc(LinkedList<Integer> stack, String s) {
