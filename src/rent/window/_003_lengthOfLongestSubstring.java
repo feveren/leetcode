@@ -25,25 +25,24 @@ import java.util.Map;
  */
 public class _003_lengthOfLongestSubstring {
     public static void main(String[] args) {
-        System.out.println(lengthOfLongestSubstring("abcabcbb"));
-        System.out.println(lengthOfLongestSubstring("bbbbb"));
-        System.out.println(lengthOfLongestSubstring("pwwkew"));
+        _003_lengthOfLongestSubstring helper = new _003_lengthOfLongestSubstring();
+        System.out.println(helper.lengthOfLongestSubstring("abcabcbb"));
+        System.out.println(helper.lengthOfLongestSubstring("bbbbb"));
+        System.out.println(helper.lengthOfLongestSubstring("pwwkew"));
     }
 
-    public static int lengthOfLongestSubstring(String s) {
+    public int lengthOfLongestSubstring(String s) {
         Map<Character, Integer> window = new HashMap<>();
         int left = 0, right = 0;
         int len = 0;
-        char[] chars = s.toCharArray();
-        for (char c : chars) {
+        while (right < s.length()) {
+            char add = s.charAt(right);
+            window.put(add, window.getOrDefault(add, 0) + 1);
             right++;
-            int count = window.getOrDefault(c, 0);
-            window.put(c, count + 1);
-            while (window.get(c) > 1) {
-                char remove = chars[left];
+            while (window.get(add) > 1) {
+                char remove = s.charAt(left);
+                window.put(remove, window.get(remove) - 1);
                 left++;
-                count = window.getOrDefault(remove, 0);
-                window.put(remove, count - 1);
             }
             len = Math.max(len, right - left);
         }

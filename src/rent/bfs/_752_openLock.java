@@ -1,9 +1,6 @@
 package rent.bfs;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 752. 打开转盘锁
@@ -47,6 +44,7 @@ import java.util.Set;
  */
 public class _752_openLock {
     public static void main(String[] args) {
+        _752_openLock helper = new _752_openLock();
 //        String[] deadends = new String[] {"0201","0101","0102","1212","2002"};
 //        String target = "0202";
 //        String[] deadends = new String[] {"8888"};
@@ -55,42 +53,35 @@ public class _752_openLock {
 //        String target = "8888";
         String[] deadends = new String[] {"0000"};
         String target = "8888";
-        System.out.println(openLock(deadends, target));
+        System.out.println(helper.openLock(deadends, target));
     }
 
-    public static int openLock(String[] deadends, String target) {
-        if (target == null || target.length() != 4) {
-            return 0;
-        }
-        Set<String> invalid = new HashSet<>();
-        for (int i = 0; deadends != null && i < deadends.length; i++) {
-            invalid.add(deadends[i]);
-        }
-        Set<String> visited = new HashSet<>();
+    public int openLock(String[] deadends, String target) {
         Queue<String> queue = new LinkedList<>();
-        final String initial = "0000";
-        queue.offer(initial);
-        visited.add(initial);
+        Set<String> dead = new HashSet<>(Arrays.asList(deadends));
+        Set<String> visited = new HashSet<>();
         int step = 0;
+        queue.offer("0000");
+        visited.add("0000");
         while (!queue.isEmpty()) {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
-                String s = queue.poll();
-                if (invalid.contains(s)) {
+                String nums = queue.poll();
+                if (dead.contains(nums)) {
                     continue;
                 }
-                if (target.equals(s)) {
+                if (target.equals(nums)) {
                     return step;
                 }
                 for (int j = 0; j < 4; j++) {
-                    String up = rollUp(s, j);
+                    String up = up(nums, j);
                     if (!visited.contains(up)) {
-                        queue.add(up);
+                        queue.offer(up);
                         visited.add(up);
                     }
-                    String down = rollDown(s, j);
+                    String down = down(nums, j);
                     if (!visited.contains(down)) {
-                        queue.add(down);
+                        queue.offer(down);
                         visited.add(down);
                     }
                 }
@@ -100,8 +91,8 @@ public class _752_openLock {
         return -1;
     }
 
-    private static String rollUp(String s, int i) {
-        char[] chars = s.toCharArray();
+    private String up(String nums, int i) {
+        char[] chars = nums.toCharArray();
         if (chars[i] == '9') {
             chars[i] = '0';
         } else {
@@ -110,8 +101,8 @@ public class _752_openLock {
         return new String(chars);
     }
 
-    private static String rollDown(String s, int i) {
-        char[] chars = s.toCharArray();
+    private String down(String nums, int i) {
+        char[] chars = nums.toCharArray();
         if (chars[i] == '0') {
             chars[i] = '9';
         } else {

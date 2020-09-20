@@ -36,4 +36,13 @@ public class NodeUtils {
         }
         return null;
     }
+
+    public static ListNode append(ListNode node1, ListNode node2) {
+        ListNode head = node1;
+        while (node1.next != null) {
+            node1 = node1.next;
+        }
+        node1.next = node2;
+        return head;
+    }
 }

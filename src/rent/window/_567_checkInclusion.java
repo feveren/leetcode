@@ -24,43 +24,43 @@ import java.util.Map;
  */
 public class _567_checkInclusion {
     public static void main(String[] args) {
-        System.out.println(checkInclusion("eidbaooo", "ab"));
-        System.out.println(checkInclusion("eidboaoo", "ab"));
+        _567_checkInclusion helper = new _567_checkInclusion();
+        System.out.println(helper.checkInclusion("eidbaooo", "ab"));
+        System.out.println(helper.checkInclusion("eidboaoo", "ab"));
     }
 
-    private static boolean checkInclusion(String src, String target) {
+    public boolean checkInclusion(String s1, String s2) {
         Map<Character, Integer> need = new HashMap<>();
-        Map<Character, Integer> window = new HashMap<>();
-        for (char c : target.toCharArray()) {
-            int count = need.getOrDefault(c, 0);
-            need.put(c, count + 1);
+        for (int i = 0; i < s2.length(); i++) {
+            char c = s2.charAt(i);
+            need.put(c, need.getOrDefault(c, 0) + 1);
         }
+        Map<Character, Integer> window = new HashMap<>();
         int left = 0, right = 0;
         int valid = 0;
-        int len = target.length();
-        char[] chars = src.toCharArray();
-        for (char c : chars) {
-            right++;
-            if (need.containsKey(c)) {
-                int count = window.getOrDefault(c, 0);
-                window.put(c, count + 1);
-                if (window.get(c).equals(need.get(c))) {
+        while (right < s1.length()) {
+            char add = s1.charAt(right);
+            if (need.containsKey(add)) {
+                int count = window.getOrDefault(add, 0) + 1;
+                if (count == need.get(add)) {
                     valid++;
                 }
+                window.put(add, count);
             }
-            while (right - left >= len) {
+            right++;
+            while (right - left >= need.size()) {
                 if (valid == need.size()) {
                     return true;
                 }
-                char remove = chars[left];
-                left++;
-                if (window.containsKey(remove)) {
+                char remove = s1.charAt(left);
+                if (need.containsKey(remove)) {
                     int count = window.getOrDefault(remove, 0);
                     if (count == need.get(remove)) {
                         valid--;
                     }
                     window.put(remove, count - 1);
                 }
+                left++;
             }
         }
         return false;

@@ -1,10 +1,9 @@
-package rent.array;
+package rent.backtrace;
 
 import rent.utils.ListUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,23 +23,27 @@ import java.util.List;
  */
 public class _047_permuteUnique {
     public static void main(String[] args) {
+        _047_permuteUnique helper = new _047_permuteUnique();
         int[] nums = new int[] {1, 2, 1};
-        List<List<Integer>> res = permuteUnique(nums);
+        List<List<Integer>> res = helper.permuteUnique(nums);
         System.out.println(ListUtils.toString(res));
     }
 
-    public static List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        LinkedList<Integer> trace = new LinkedList<>();
-        boolean[] used = new boolean[nums.length];
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length <= 1) {
+            return result;
+        }
         Arrays.sort(nums);
-        backtrace(res, trace, used, nums);
-        return res;
+        List<Integer> path = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        dfs(nums, used, path, result);
+        return result;
     }
 
-    public static void backtrace(List<List<Integer>> res, LinkedList<Integer> trace, boolean[] used, int[] nums) {
-        if (trace.size() == nums.length) {
-            res.add(new ArrayList<>(trace));
+    private void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> result) {
+        if (nums.length == path.size()) {
+            result.add(new ArrayList<>(path));
             return;
         }
         for (int i = 0; i < nums.length; i++) {
@@ -50,11 +53,11 @@ public class _047_permuteUnique {
             if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
                 continue;
             }
-            trace.addLast(nums[i]);
             used[i] = true;
-            backtrace(res, trace, used, nums);
-            trace.removeLast();
+            path.add(nums[i]);
+            dfs(nums, used, path, result);
             used[i] = false;
+            path.remove(path.size() - 1);
         }
     }
 }

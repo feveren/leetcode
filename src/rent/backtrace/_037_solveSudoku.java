@@ -1,4 +1,4 @@
-package rent.array;
+package rent.backtrace;
 
 import rent.utils.ArrayUtils;
 

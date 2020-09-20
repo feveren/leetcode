@@ -8,11 +8,10 @@ import java.util.Map;
  * 给你一个字符串 S、一个字符串 T，请在字符串 S 里面找出：包含 T 所有字符的最小子串。
  *
  * 示例：
- *
  * 输入: S = "ADOBECODEBANC", T = "ABC"
  * 输出: "BANC"
- * 说明：
  *
+ * 说明：
  * 如果 S 中不存这样的子串，则返回空字符串 ""。
  * 如果 S 中存在这样的子串，我们保证它是唯一的答案。
  *
@@ -20,63 +19,60 @@ import java.util.Map;
  */
 public class _076_minWindow {
     public static void main(String[] args) {
+        _076_minWindow helper = new _076_minWindow();
         String src = "ADOBECODEBANC";
         String target = "ABC";
 //        String src = "a";
 //        String target = "aa";
-        System.out.println(midWindow(src, target));
+        System.out.println(helper.minWindow(src, target));
     }
 
-    private static String midWindow(String src, String target) {
-        Map<Character, Integer> window = new HashMap<>();
+    public String minWindow(String s, String t) {
+        // 统计需要的数据
         Map<Character, Integer> need = new HashMap<>();
-        for (char c : target.toCharArray()) {
-            addOne(need, c);
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            need.put(c, need.getOrDefault(c, 0) + 1);
         }
-        int left = 0;
-        int right = 0;
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0, right = 0;
         int valid = 0;
-        int start = 0, len = Integer.MAX_VALUE;
-        char[] srcs = src.toCharArray();
-        while (right < srcs.length) {
-            char c = srcs[right];
+        int start = -1, len = Integer.MAX_VALUE;
+        while (right < s.length()) {
+            char c = s.charAt(right);
+            if (need.containsKey(c)) {
+                int count = window.getOrDefault(c, 0) + 1;
+                window.put(c, count);
+                // 如果该字符的数量==需要的数量时，valid++
+                if (count == need.get(c)) {
+                    valid++;
+                }
+            }
+            // 扩大窗口
             right++;
-            if (!need.containsKey(c)) {
-                continue;
-            }
-            addOne(window, c);
-            if (window.get(c).equals(need.get(c))) {
-                valid++;
-            }
-            if (valid < need.size()) {
-                continue;
-            }
+            // 所有字符都满足了需要的数量时
             while (valid == need.size()) {
+                // 和之前的子串长度比较
                 if (right - left < len) {
                     start = left;
                     len = right - left;
                 }
-                char remove = srcs[left];
-                left++;
-                if (window.containsKey(remove)) {
-                    int count = window.get(remove);
-                    if (count > 0) {
-                        window.put(remove, count - 1);
-                    }
-                    if (window.get(remove) < need.get(remove)) {
+                char removed = s.charAt(left);
+                if (need.containsKey(removed)) {
+                    int count = window.get(removed);
+                    // 如果删除了需要的字符
+                    if (count == need.get(removed)) {
                         valid--;
                     }
+                    window.put(removed, count - 1);
                 }
+                // 收缩窗口
+                left++;
             }
         }
-        return len == Integer.MAX_VALUE ? "" : src.substring(start, start + len);
-    }
-
-    private static void addOne(Map<Character, Integer> map, char key) {
-        if (map.containsKey(key)) {
-            map.put(key, map.get(key) + 1);
-        } else {
-            map.put(key, 1);
+        if (start == -1 || len == Integer.MAX_VALUE) {
+            return null;
         }
+        return s.substring(start, start + len);
     }
 }

@@ -1,4 +1,4 @@
-package rent.array;
+package rent.others;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Map;
  * 因为 nums[0] + nums[1] = 2 + 7 = 9
  * 所以返回 [0, 1]
  */
-public class TwoSum {
+public class _001_TwoSum {
     public static void main(String[] args) {
         ordered(18, new int[] { 2, 7, 11, 15 });
         System.out.println(Arrays.toString(unordered(new int[] { 7, 15, 2, 11 }, 17)));
