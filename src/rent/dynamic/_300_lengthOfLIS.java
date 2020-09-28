@@ -1,4 +1,6 @@
-package rent.array;
+package rent.dynamic;
+
+import java.util.Arrays;
 
 /**
  * 300. 最长上升子序列
@@ -18,24 +20,32 @@ package rent.array;
  */
 public class _300_lengthOfLIS {
     public static void main(String[] args) {
+        _300_lengthOfLIS helper = new _300_lengthOfLIS();
         int[] array = new int[] {10,9,2,5,3,7,101,18};
-        System.out.println(lengthOfLIS(array));
+        System.out.println(helper.lengthOfLIS(array));
     }
 
-    private static int lengthOfLIS(int[] nums) {
-        if (nums == null || nums.length == 0) {
+    private int lengthOfLIS(int[] nums) {
+        if (nums == null) {
             return 0;
         }
-        int[] dp = new int[nums.length];
-        int count = 0;
-        for (int i = 1; i < nums.length; i++) {
+        int length = nums.length;
+        if (length <= 1) {
+            return length;
+        }
+        int[] dp = new int[length];
+        Arrays.fill(dp, 1);
+        for (int i = 0; i < length; i++) {
             for (int j = 0; j < i; j++) {
                 if (nums[i] > nums[j]) {
-                    dp[i] = Math.max(dp[i], 1 + dp[j]);
+                    dp[i] = Math.max(dp[j] + 1, dp[i]);
                 }
             }
-            count = Math.max(count, dp[i]);
         }
-        return count + 1;
+        int max = 0;
+        for (int i = 0; i < length; i++) {
+            max = Math.max(dp[i], max);
+        }
+        return max;
     }
 }
