@@ -1,4 +1,4 @@
-package rent.dynamic;
+package rent.dynamic.backpack;
 
 /**
  * 518. 零钱兑换 II
@@ -33,45 +33,40 @@ package rent.dynamic;
  */
 public class _518_change {
     public static void main(String[] args) {
-        System.out.println(change(5, new int[] {1, 2, 5}));
-        System.out.println(change2(5, new int[] {1, 2, 5}));
+        _518_change helper = new _518_change();
+        System.out.println(helper.change(5, new int[] {1, 2, 5}));
+        System.out.println(helper.change(3, new int[] {2}));
+        System.out.println(helper.change(10, new int[] {10}));
     }
 
-    private static int change(int amount, int[] coins) {
-        if (amount <= 0) {
-            return 0;
+    public int change(int amount, int[] coins) {
+        int len = coins.length;
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int i = 0; i < len; i++) {
+            for (int j = coins[i]; j <= amount; j++) {
+                dp[j] = dp[j] + dp[j - coins[i]];
+            }
         }
+        return dp[amount];
+    }
+
+    public int change2(int amount, int[] coins) {
         int len = coins.length;
         int[][] dp = new int[len + 1][amount + 1];
         for (int i = 0; i <= len; i++) {
             dp[i][0] = 1;
         }
         for (int i = 1; i <= len; i++) {
-            for (int a = 1; a <= amount; a++) {
-                if (a < coins[i - 1]) {
-                    dp[i][a] = dp[i - 1][a];
+            for (int j = 1; j <= amount; j++) {
+                int value = coins[i - 1];
+                if (value <= j) {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - value];
                 } else {
-                    dp[i][a] = dp[i - 1][a] + dp[i][a - coins[i - 1]];
+                    dp[i][j] = dp[i - 1][j];
                 }
             }
         }
         return dp[len][amount];
-    }
-
-    private static int change2(int amount, int[] coins) {
-        if (amount <= 0) {
-            return 0;
-        }
-        int len = coins.length;
-        int[] dp = new int[amount + 1];
-        dp[0] = 1;
-        for (int i = 1; i <= len; i++) {
-            for (int a = 1; a <= amount; a++) {
-                if (a >= coins[i - 1]) {
-                    dp[a] = dp[a] + dp[a - coins[i - 1]];
-                }
-            }
-        }
-        return dp[amount];
     }
 }
