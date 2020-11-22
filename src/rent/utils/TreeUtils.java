@@ -2,6 +2,9 @@ package rent.utils;
 
 import rent.model.TreeNode;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class TreeUtils {
     public static TreeNode buildTree(Integer[] array) {
         return buildTree(array, 0);
@@ -37,5 +40,39 @@ public class TreeUtils {
             return right;
         }
         return null;
+    }
+
+    public static String toString(TreeNode root) {
+        StringBuilder builder = new StringBuilder();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node.left == null && node.right == null) {
+                    builder.append(node.val);
+                } else {
+                    builder.append(node.val + "(");
+                    if (node.left != null) {
+                        queue.offer(node.left);
+                        builder.append(node.left.val);
+                    } else {
+                        builder.append("_");
+                    }
+                    builder.append(",");
+                    if (node.right != null) {
+                        queue.offer(node.right);
+                        builder.append(node.right.val);
+                    } else {
+                        builder.append("_");
+                    }
+                    builder.append(")");
+                }
+                builder.append("  ");
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
