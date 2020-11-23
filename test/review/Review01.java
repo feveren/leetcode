@@ -1,8 +1,10 @@
 package review;
 
 import org.junit.Test;
+import rent.model.ListNode;
 import rent.model.TreeNode;
 import rent.utils.ArrayUtils;
+import rent.utils.NodeUtils;
 import rent.utils.TreeUtils;
 
 import java.util.Arrays;
@@ -442,5 +444,110 @@ public class Review01 {
         int right = Math.max(maxPathSumDivide(root.right), 0);
         mMaxValue = Math.max(mMaxValue, left + root.val + right);
         return Math.max(left, right) + root.val;
+    }
+
+    @Test
+    public void detectCycle() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5, 6});
+        ListNode n = NodeUtils.findNode(node, 3);
+        ListNode last = NodeUtils.findNode(node, 6);
+        last.next = n;
+        System.out.println(detectCycle(node));
+    }
+
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        boolean hasCycle = false;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                hasCycle = true;
+                break;
+            }
+        }
+        if (!hasCycle) {
+            return null;
+        }
+        slow = slow.next;
+        fast = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    @Test
+    public void isPalindrome() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 3, 1});
+        System.out.println(isPalindrome(node));
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        ListNode middle = findMiddle(head);
+        ListNode left = head;
+        ListNode right = middle.next;
+        middle.next = null;
+        right = reverse(right);
+        while (left != null && right != null) {
+            if (left.val != right.val) {
+                return false;
+            }
+            left = left.next;
+            right = right.next;
+        }
+        return true;
+    }
+
+    private ListNode findMiddle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public ListNode reverse(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    @Test
+    public void reverseK() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5, 6});
+        System.out.println(NodeUtils.toString(reverseK(node, 1)));
+    }
+
+    public ListNode reverseK(ListNode head, int k) {
+        if (head == null || k <= 1) {
+            return head;
+        }
+        int count = 0;
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null && count < k) {
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+            count++;
+        }
+        head.next = curr;
+        return prev;
+    }
+
+    public ListNode reverseBetween(ListNode head, int k) {
+        return null;
     }
 }

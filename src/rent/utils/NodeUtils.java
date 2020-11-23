@@ -4,12 +4,18 @@ import rent.model.ListNode;
 
 public class NodeUtils {
     public static void println(ListNode node) {
+        System.out.println(toString(node));
+    }
+
+    public static String toString(ListNode node) {
+        StringBuilder builder = new StringBuilder();
         ListNode n = node;
         while (n != null) {
-            System.out.print(n.val + " ");
+            builder.append(n.val + " ");
             n = n.next;
         }
-        System.out.println();
+        builder.append("\n");
+        return builder.toString();
     }
 
     public static ListNode buildStack(int[] array) {
