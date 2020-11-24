@@ -998,4 +998,157 @@ public class Review01 {
         }
         return start >= 0 ? s.substring(start, start + length) : null;
     }
+
+    @Test
+    public void checkInclusion() {
+        System.out.println(checkInclusion2("ab", "eidbaooo"));
+        System.out.println(checkInclusion2("ab", "eidboaoo"));
+    }
+
+    public boolean checkInclusion(String s1, String s2) {
+        Map<Character, Integer> need = new HashMap<>();
+        for (int i = 0; i < s1.length(); i++) {
+            char c = s1.charAt(i);
+            int count = need.getOrDefault(c, 0) + 1;
+            need.put(c, count);
+        }
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int valid = 0;
+        while (right < s2.length()) {
+            char add = s2.charAt(right);
+            if (need.containsKey(add)) {
+                int count = window.getOrDefault(add, 0) + 1;
+                window.put(add, count);
+                if (count == need.get(add)) {
+                    valid++;
+                }
+            } else {
+                window.clear();
+                valid = 0;
+                left++;
+            }
+            right++;
+            if (valid == need.size()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkInclusion2(String s1, String s2) {
+        Map<Character, Integer> need = new HashMap<>();
+        for (int i = 0; i < s1.length(); i++) {
+            char c = s1.charAt(i);
+            int count = need.getOrDefault(c, 0) + 1;
+            need.put(c, count);
+        }
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int valid = 0;
+        while (right < s2.length()) {
+            char add = s2.charAt(right);
+            if (need.containsKey(add)) {
+                int count = window.getOrDefault(add, 0) + 1;
+                window.put(add, count);
+                if (count == need.get(add)) {
+                    valid++;
+                }
+            }
+            right++;
+            while (right - left >= s1.length()) {
+                if (valid == need.size()) {
+                    return true;
+                }
+                char remove = s2.charAt(left);
+                if (need.containsKey(remove)) {
+                    int count = window.get(remove) - 1;
+                    window.put(remove, count);
+                    if (need.containsKey(remove) && count < need.get(remove)) {
+                        valid--;
+                    }
+                }
+                left++;
+            }
+        }
+        return false;
+    }
+
+    @Test
+    public void lengthOfLongestSubstring() {
+        System.out.println(lengthOfLongestSubstring("abcabcbb"));
+        System.out.println(lengthOfLongestSubstring("bbbbb"));
+        System.out.println(lengthOfLongestSubstring("pwwkew"));
+    }
+
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int max = 0;
+        while (right < s.length()) {
+            char add = s.charAt(right);
+            int count = window.getOrDefault(add, 0);
+            window.put(add, count + 1);
+            right++;
+            while (window.get(add) > 1) {
+                char remove = s.charAt(left);
+                window.put(remove, window.get(remove) - 1);
+                left++;
+            }
+            max = Math.max(max, right - left);
+        }
+        return max;
+    }
+
+    @Test
+    public void findRepeatNumber() {
+        System.out.println(findRepeatNumber(new int[] {2, 3, 1, 0, 2, 5, 3}));
+    }
+
+    public int findRepeatNumber(int[] nums) {
+        int i = 0;
+        while (i < nums.length) {
+            int num = nums[i];
+            if (num != i) {
+                if (nums[num] == num) {
+                    return nums[i];
+                }
+                nums[i] = nums[num];
+                nums[num] = num;
+            } else {
+                i++;
+            }
+        }
+        return -1;
+    }
+
+    @Test
+    public void merge() {
+        int[] array1 = {1, 2, 3, 0, 0, 0};
+        int[] array2 = {2, 5, 6};
+        merge(array1, 3, array2, 3);
+        System.out.println(Arrays.toString(array1));
+    }
+
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int index = nums1.length - 1;
+        int i = m - 1;
+        int j = n - 1;
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] > nums2[j]) {
+                nums1[index] = nums1[i];
+                i--;
+            } else {
+                nums1[index] = nums2[j];
+                j--;
+            }
+            index--;
+        }
+        if (j >= 0) {
+            System.arraycopy(nums2, 0, nums1, 0, j + 1);
+        }
+    }
 }
