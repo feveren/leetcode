@@ -7,8 +7,7 @@ import rent.utils.ArrayUtils;
 import rent.utils.NodeUtils;
 import rent.utils.TreeUtils;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Review01 {
     @Test
@@ -447,6 +446,70 @@ public class Review01 {
     }
 
     @Test
+    public void deleteDuplicates() {
+        ListNode head = NodeUtils.buildStack(new int[] {1, 2, 2, 3, 3, 3, 4});
+        NodeUtils.println(deleteDuplicates(head));
+        head = NodeUtils.buildStack(new int[] {1, 2, 2, 3, 3, 3, 4});
+        NodeUtils.println(deleteDuplicates2(head));
+    }
+
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null) {
+            if (slow.val != fast.val) {
+                slow.next = fast;
+                slow = slow.next;
+            }
+            fast = fast.next;
+        }
+        return head;
+    }
+
+    public ListNode deleteDuplicates2(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode slow = dummy;
+        ListNode fast = dummy.next;
+        while (fast != null && fast.next != null) {
+            if (slow.next.val != fast.next.val) {
+                slow = slow.next;
+                fast = fast.next;
+            } else {
+                while (fast.next != null && slow.next.val == fast.next.val) {
+                    fast = fast.next;
+                }
+                fast = fast.next;
+                slow.next = fast;
+            }
+        }
+        return dummy.next;
+    }
+
+    @Test
+    public void hasCycle() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5, 6});
+        ListNode n = NodeUtils.findNode(node, 3);
+        ListNode last = NodeUtils.findNode(node, 6);
+        last.next = n;
+        System.out.println(hasCycle(node));
+        System.out.println(hasCycle(node));
+    }
+
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            if (slow == fast) {
+                return true;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return false;
+    }
+
+    @Test
     public void detectCycle() {
         ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5, 6});
         ListNode n = NodeUtils.findNode(node, 3);
@@ -547,7 +610,285 @@ public class Review01 {
         return prev;
     }
 
+    @Test
+    public void reverseBetween() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5, 6});
+        System.out.println(NodeUtils.toString(reverseBetween(node, 4)));
+    }
+
     public ListNode reverseBetween(ListNode head, int k) {
-        return null;
+        if (head == null || k <= 1) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode guard = dummy;
+        ListNode pointer = head;
+        while (pointer != null) {
+            ListNode node = pointer;
+            for (int i = 0; i < k - 1 && node != null; i++) {
+                node = node.next;
+            }
+            if (node == null) {
+                break;
+            }
+            for (int i = 0; i < k - 1; i++) {
+                ListNode next = pointer.next;
+                pointer.next = next.next;
+                next.next = guard.next;
+                guard.next = next;
+            }
+            guard = pointer;
+            pointer = pointer.next;
+        }
+        return dummy.next;
+    }
+
+    @Test
+    public void mergeTwoLists() {
+        ListNode node1 = NodeUtils.buildStack(new int[]{1, 3, 4, 6});
+        ListNode node2 = NodeUtils.buildStack(new int[]{2, 5, 7});
+        System.out.println(NodeUtils.toString(mergeTwoLists(node1, node2)));
+    }
+
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode node = dummy;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                node.next = l1;
+                node = l1;
+                l1 = l1.next;
+            } else {
+                node.next = l2;
+                node = l2;
+                l2 = l2.next;
+            }
+        }
+        if (l1 != null) {
+            node.next = l1;
+        }
+        if (l2 != null) {
+            node.next = l2;
+        }
+        return dummy.next;
+    }
+
+    @Test
+    public void partition() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 4, 3, 2, 5, 2});
+        System.out.println(NodeUtils.toString(partition(node, 3)));
+    }
+
+    public ListNode partition(ListNode head, int x) {
+        ListNode less = new ListNode(0);
+        ListNode lessHead = less;
+        ListNode greater = new ListNode(0);
+        ListNode greaterHead = greater;
+        ListNode node = head;
+        while (node != null) {
+            if (node.val < x) {
+                less.next = node;
+                less = less.next;
+            } else {
+                greater.next = node;
+                greater = greater.next;
+            }
+            node = node.next;
+        }
+        greater.next = null;
+        less.next = greaterHead.next;
+        return lessHead.next;
+    }
+
+    @Test
+    public void sortList() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 4, 3, 2, 5, 6});
+        System.out.println(NodeUtils.toString(sortList(node)));
+    }
+
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode mid = findNodeMiddle(head);
+        ListNode left = head;
+        ListNode right = mid.next;
+        mid.next = null;
+        left = sortList(left);
+        right = sortList(right);
+        ListNode dummy = new ListNode(0);
+        ListNode node = dummy;
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                node.next = left;
+                left = left.next;
+            } else {
+                node.next = right;
+                right = right.next;
+            }
+            node = node.next;
+        }
+        if (left != null) {
+            node.next = left;
+        }
+        if (right != null) {
+            node.next = right;
+        }
+        return dummy.next;
+    }
+
+    private ListNode findNodeMiddle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    @Test
+    public void reorderList() {
+        ListNode node = NodeUtils.buildStack(new int[]{1, 2, 3, 4, 5});
+        System.out.println(NodeUtils.toString(reorderList(node)));
+    }
+
+    public ListNode reorderList(ListNode head) {
+        ListNode mid = findNodeMiddle(head);
+        ListNode left = head;
+        ListNode right = mid.next;
+        mid.next = null;
+        right = reverse(right);
+        ListNode dummy = new ListNode(0);
+        ListNode node = dummy;
+        while (left != null && right != null) {
+            node.next = left;
+            left = left.next;
+            node = node.next;
+
+            node.next = right;
+            right = right.next;
+            node = node.next;
+        }
+        if (left != null) {
+            node.next = left;
+        }
+        return dummy.next;
+    }
+
+    @Test
+    public void copyRandomList() {
+        Node node = buildStack(new int[]{1, 2, 3, 4, 5});
+        buildRandom(node);
+        println(node);
+        System.out.println("start copyRandomList");
+        node = copyRandomList(node);
+        println(node);
+    }
+
+    static class Node {
+        int val;
+        Node next;
+        Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+
+        @Override
+        public String toString() {
+            return "Node@" + hashCode() + "{" +
+                    "val=" + val +
+                    ", next=" + (next != null ? next.val : "") +
+                    ", random=" + (random != null ? random.val : "") +
+                    '}';
+        }
+    }
+
+    private static Node buildStack(int[] array) {
+        Node head = null;
+        Node node = null;
+        for (int i : array) {
+            if (head == null) {
+                head = new Node(i);
+                node = head;
+            } else {
+                node.next = new Node(i);
+                node = node.next;
+            }
+        }
+        return head;
+    }
+
+    private static void buildRandom(Node node) {
+        List<Node> list = new ArrayList<>();
+        Node n = node;
+        while (n != null) {
+            list.add(n);
+            n = n.next;
+        }
+        Collections.reverse(list);
+
+        n = node;
+        int index = 0;
+        while (n != null) {
+            n.random = list.get(index++);
+            n = n.next;
+        }
+    }
+
+    private static void println(Node node) {
+        Node n = node;
+        while (n != null) {
+            System.out.println(n);
+            n = n.next;
+        }
+    }
+
+    public Node copyRandomList(Node head) {
+        Node node = head;
+        Map<Node, Node> map = new HashMap<>();
+        while (node != null) {
+            map.put(node, new Node(node.val));
+            node = node.next;
+        }
+        node = head;
+        while (node != null) {
+            Node copy = map.get(node);
+            if (node.next != null) {
+                copy.next = map.get(node.next);
+            }
+            if (node.random != null) {
+                copy.random = map.get(node.random);
+            }
+            node = node.next;
+        }
+        return map.get(head);
+    }
+
+    @Test
+    public void getIntersectionNode() {
+        ListNode same = NodeUtils.buildStack(new int[]{1, 2, 3});
+        ListNode node1 = NodeUtils.buildStack(new int[]{7, 4});
+        ListNode node2 = NodeUtils.buildStack(new int[]{2, 3, 7});
+        node1 = NodeUtils.append(node1, same);
+        node2 = NodeUtils.append(node2, same);
+        NodeUtils.println(node1);
+        NodeUtils.println(node2);
+        ListNode node = getIntersectionNode(node1, node2);
+        System.out.println(node);
+    }
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode nodeA = headA;
+        ListNode nodeB = headB;
+        while (nodeA != nodeB) {
+            nodeA = nodeA != null ? nodeA.next : headB;
+            nodeB = nodeB != null ? nodeB.next : headA;
+        }
+        return nodeA;
     }
 }
