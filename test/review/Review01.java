@@ -891,4 +891,111 @@ public class Review01 {
         }
         return nodeA;
     }
+
+    @Test
+    public void calculate() {
+        mIndex = 0;
+        System.out.println(calculate("11 + 20 / (2 - 4) + 5"));
+    }
+
+    private int mIndex;
+
+    public int calculate(String s) {
+        LinkedList<Integer> stack = new LinkedList<>();
+        char[] chars = s.toCharArray();
+        char sign = '+';
+        int num = 0;
+        int length = chars.length;
+        while (mIndex < length) {
+            char c = chars[mIndex];
+            mIndex++;
+            boolean isDigit = isDigit(c);
+            if (isDigit) {
+                num = num * 10 + (c - '0');
+            }
+            if (c == '(') {
+                num = calculate(s);
+            }
+            if ((c != ' ' && !isDigit) || mIndex == length) {
+                switch (sign) {
+                    case '+':
+                        stack.push(num);
+                        break;
+
+                    case '-':
+                        stack.push(-num);
+                        break;
+
+                    case '*':
+                        stack.push(stack.pop() * num);
+                        break;
+
+                    case '/':
+                        stack.push(stack.pop() / num);
+                        break;
+                }
+                num = 0;
+                sign = c;
+            }
+            if (c == ')') {
+                break;
+            }
+        }
+        int res = 0;
+        while (!stack.isEmpty()) {
+            res += stack.pop();
+        }
+        return res;
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
+
+    @Test
+    public void minWindow() {
+        System.out.println(minWindow("ADOBECODEBANC", "ABC"));
+    }
+
+    public String minWindow(String s, String t) {
+        Map<Character, Integer> need = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            int count = need.getOrDefault(c, 0);
+            need.put(c, count + 1);
+        }
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int start = -1;
+        int length = Integer.MAX_VALUE;
+        int valid = 0;
+        while (right < s.length()) {
+            char add = s.charAt(right);
+            if (need.containsKey(add)) {
+                int count = window.getOrDefault(add, 0) + 1;
+                window.put(add, count);
+                if (count == need.get(add)) {
+                    valid++;
+                }
+            }
+            right++;
+            while (valid == need.size()) {
+                if (right - left < length) {
+                    start = left;
+                    length = right - left;
+                }
+                char remove = s.charAt(left);
+                if (need.containsKey(remove)) {
+                    int count = window.get(remove) - 1;
+                    window.put(remove, count);
+                    if (count < need.get(remove)) {
+                        valid--;
+                    }
+                }
+                left++;
+            }
+        }
+        return start >= 0 ? s.substring(start, start + length) : null;
+    }
 }
