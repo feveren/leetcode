@@ -4,6 +4,7 @@ import org.junit.Test;
 import rent.model.ListNode;
 import rent.model.TreeNode;
 import rent.utils.ArrayUtils;
+import rent.utils.ListUtils;
 import rent.utils.NodeUtils;
 import rent.utils.TreeUtils;
 
@@ -1150,5 +1151,169 @@ public class Review01 {
         if (j >= 0) {
             System.arraycopy(nums2, 0, nums1, 0, j + 1);
         }
+    }
+
+    @Test
+    public void longestConsecutive() {
+//        System.out.println(longestConsecutive(new int[] {100,4,200,1,3,2}));
+        System.out.println(longestConsecutive(new int[] {0,3,7,4,5,8,2,6,0,1}));
+    }
+
+    public int longestConsecutive(int[] nums) {
+        if (nums == null) {
+            return 0;
+        }
+        if (nums.length <= 1) {
+            return nums.length;
+        }
+        int max = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                continue;
+            }
+            int left = map.getOrDefault(num - 1, 0);
+            int right = map.getOrDefault(num + 1, 0);
+            int count = left + right + 1;
+            max = Math.max(max, count);
+            map.put(num, count);
+            if (left > 0) {
+                map.put(num - left, count);
+            }
+            if (right > 0) {
+                map.put(num + right, count);
+            }
+        }
+        return max;
+    }
+
+    public int longestConsecutive2(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, 1);
+        }
+        int max = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int num = entry.getKey();
+            int count = 1;
+            while (map.containsKey(num - 1)) {
+                count++;
+                num--;
+            }
+            max = Math.max(max, count);
+        }
+        return max;
+    }
+
+    @Test
+    public void rotate() {
+        int[] array = new int[] {1,2,3,4,5,6,7};
+        rotate(array, 3);
+        System.out.println(Arrays.toString(array));
+
+        array = new int[] {-1,-100,3,99};
+        rotate(array, 2);
+        System.out.println(Arrays.toString(array));
+    }
+
+    public void rotate(int[] nums, int k) {
+        int length = nums.length;
+        k = k % length;
+        if (k == 0) {
+            return;
+        }
+        int count = 0;
+        for (int i = 0; count < length; i++) {
+            int prev = nums[i];
+            int ptr = i;
+            do {
+                int next = (ptr + k) % length;
+                int tmp = nums[next];
+                nums[next] = prev;
+                prev = tmp;
+                ptr = next;
+                count++;
+            } while (ptr != i);
+        }
+    }
+
+    @Test
+    public void permute() {
+        List<List<Integer>> res = permute(new int[]{1, 2, 3});
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+        permuteDfs(nums, res, path, visited);
+        return res;
+    }
+
+    private void permuteDfs(int[] nums, List<List<Integer>> res, List<Integer> path, boolean[] visited) {
+        if (path.size() == nums.length) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            path.add(nums[i]);
+            visited[i] = true;
+            permuteDfs(nums, res, path, visited);
+            path.remove(path.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    @Test
+    public void permute2() {
+        List<List<Integer>> res = permute2(new int[]{1, 1, 2});
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> permute2(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+        Arrays.sort(nums);
+        permuteDfs2(nums, res, path, visited);
+        return res;
+    }
+
+    private void permuteDfs2(int[] nums, List<List<Integer>> res, List<Integer> path, boolean[] visited) {
+        if (path.size() == nums.length) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
+                continue;
+            }
+            path.add(nums[i]);
+            visited[i] = true;
+            permuteDfs2(nums, res, path, visited);
+            path.remove(path.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    @Test
+    public void combinationSum() {
+        List<List<Integer>> res = combinationSum(new int[]{2,3,6,7}, 7);
+        System.out.println(ListUtils.toString(res));
+        System.out.println();
+        res = combinationSum(new int[]{2,3,5}, 8);
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        return res;
     }
 }
