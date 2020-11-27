@@ -41,7 +41,7 @@ public class Review01 {
 
     @Test
     public void isValidBST() {
-        TreeNode root = TreeUtils.buildTree(new Integer[]{3,1,5,null,null,2,6});
+        TreeNode root = TreeUtils.buildTree(new Integer[]{3, 1, 5, null, null, 2, 6});
 
         LinkedList<TreeNode> stack = new LinkedList<>();
         TreeNode node = root;
@@ -69,7 +69,7 @@ public class Review01 {
 
     @Test
     public void isValidBSTRecursive() {
-        TreeNode root = TreeUtils.buildTree(new Integer[]{3,1,5,null,null,4,6});
+        TreeNode root = TreeUtils.buildTree(new Integer[]{3, 1, 5, null, null, 4, 6});
         mLastVal = Integer.MIN_VALUE;
         System.out.println(isValidBSTRecursive(root));
     }
@@ -93,7 +93,7 @@ public class Review01 {
 
     @Test
     public void isValidBST2Test() {
-        TreeNode root = TreeUtils.buildTree(new Integer[]{3,1,5,null,null,2,6});
+        TreeNode root = TreeUtils.buildTree(new Integer[]{3, 1, 5, null, null, 2, 6});
         System.out.println(isValidBST2(root, null, null));
     }
 
@@ -112,7 +112,7 @@ public class Review01 {
 
     @Test
     public void insertIntoBST() {
-        TreeNode root = TreeUtils.buildTree(new Integer[]{3,1,5,null,null,4,6});
+        TreeNode root = TreeUtils.buildTree(new Integer[]{3, 1, 5, null, null, 4, 6});
         TreeNode node = insertIntoBST(root, 2);
         System.out.println(TreeUtils.toString(node));
     }
@@ -131,7 +131,7 @@ public class Review01 {
 
     @Test
     public void heapSortTest() {
-        int[] array = new int[] {2, 9, 3, 4, 1, 7, 5};
+        int[] array = new int[]{2, 9, 3, 4, 1, 7, 5};
         int length = array.length;
         int start = length / 2 - 1;
         for (int i = start; i >= 0; i--) {
@@ -165,7 +165,7 @@ public class Review01 {
 
     @Test
     public void topKTest() {
-        int[] array = new int[] {2, 9, 3, 4, 1, 7, 5};
+        int[] array = new int[]{2, 9, 3, 4, 1, 7, 5};
         int k = 5;
         for (int i = k / 2 - 1; i >= 0; i--) {
             heapifyMin(array, i, k);
@@ -198,7 +198,7 @@ public class Review01 {
     // TODO
     @Test
     public void topKTest2() {
-        int[] array = new int[] {2, 9, 3, 4, 1, 7, 5};
+        int[] array = new int[]{2, 9, 3, 4, 1, 7, 5};
         quickSortTopK(array, 4);
         System.out.println(Arrays.toString(array));
     }
@@ -237,7 +237,7 @@ public class Review01 {
     // TODO
     @Test
     public void quickSortTest() {
-        int[] array = new int[] {2, 9, 3, 4, 1, 7, 5};
+        int[] array = new int[]{2, 9, 3, 4, 1, 7, 5};
         quickSort(array, 0, array.length - 1);
         System.out.println(Arrays.toString(array));
     }
@@ -270,7 +270,7 @@ public class Review01 {
     // TODO
     @Test
     public void mergeSort() {
-        int[] array = new int[] {2, 9, 3, 4, 1, 7, 5};
+        int[] array = new int[]{2, 9, 3, 4, 1, 7, 5};
         divideAndMerge(array, 0, array.length - 1, new int[array.length]);
         System.out.println(Arrays.toString(array));
     }
@@ -346,7 +346,7 @@ public class Review01 {
 
     @Test
     public void binarySearch() {
-        int[] array = new int[] {1, 2, 3, 3, 3, 4, 5, 5, 5, 6, 7, 7};
+        int[] array = new int[]{1, 2, 3, 3, 3, 4, 5, 5, 5, 6, 7, 7};
         int target = 7;
         System.out.println(binarySearch(array, target));
         System.out.println(binarySearchLeft(array, target));
@@ -448,9 +448,9 @@ public class Review01 {
 
     @Test
     public void deleteDuplicates() {
-        ListNode head = NodeUtils.buildStack(new int[] {1, 2, 2, 3, 3, 3, 4});
+        ListNode head = NodeUtils.buildStack(new int[]{1, 2, 2, 3, 3, 3, 4});
         NodeUtils.println(deleteDuplicates(head));
-        head = NodeUtils.buildStack(new int[] {1, 2, 2, 3, 3, 3, 4});
+        head = NodeUtils.buildStack(new int[]{1, 2, 2, 3, 3, 3, 4});
         NodeUtils.println(deleteDuplicates2(head));
     }
 
@@ -1106,7 +1106,7 @@ public class Review01 {
 
     @Test
     public void findRepeatNumber() {
-        System.out.println(findRepeatNumber(new int[] {2, 3, 1, 0, 2, 5, 3}));
+        System.out.println(findRepeatNumber(new int[]{2, 3, 1, 0, 2, 5, 3}));
     }
 
     public int findRepeatNumber(int[] nums) {
@@ -1156,7 +1156,7 @@ public class Review01 {
     @Test
     public void longestConsecutive() {
 //        System.out.println(longestConsecutive(new int[] {100,4,200,1,3,2}));
-        System.out.println(longestConsecutive(new int[] {0,3,7,4,5,8,2,6,0,1}));
+        System.out.println(longestConsecutive(new int[]{0, 3, 7, 4, 5, 8, 2, 6, 0, 1}));
     }
 
     public int longestConsecutive(int[] nums) {
@@ -1207,11 +1207,11 @@ public class Review01 {
 
     @Test
     public void rotate() {
-        int[] array = new int[] {1,2,3,4,5,6,7};
+        int[] array = new int[]{1, 2, 3, 4, 5, 6, 7};
         rotate(array, 3);
         System.out.println(Arrays.toString(array));
 
-        array = new int[] {-1,-100,3,99};
+        array = new int[]{-1, -100, 3, 99};
         rotate(array, 2);
         System.out.println(Arrays.toString(array));
     }
@@ -1305,15 +1305,136 @@ public class Review01 {
 
     @Test
     public void combinationSum() {
-        List<List<Integer>> res = combinationSum(new int[]{2,3,6,7}, 7);
+//        List<List<Integer>> res = combinationSum(new int[]{2,3,6,7}, 7);
+//        System.out.println(ListUtils.toString(res));
+//        System.out.println();
+//        res = combinationSum(new int[]{2,3,5}, 8);
+//        System.out.println(ListUtils.toString(res));
+
+        List<List<Integer>> res = combinationSum(new int[]{2, 5, 2, 1, 2}, 5);
         System.out.println(ListUtils.toString(res));
         System.out.println();
-        res = combinationSum(new int[]{2,3,5}, 8);
+        res = combinationSum(new int[]{10, 1, 2, 7, 6, 1, 5}, 8);
         System.out.println(ListUtils.toString(res));
     }
 
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        Arrays.sort(candidates);
+        combinationSumDfs(candidates, target, res, path, 0);
         return res;
+    }
+
+    private void combinationSumDfs(int[] candidates, int target, List<List<Integer>> res, List<Integer> path, int start) {
+        if (target == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            if (candidates[i] > target) {
+                continue;
+            }
+            if (i > start && candidates[i - 1] == candidates[i]) {
+                continue;
+            }
+            path.add(candidates[i]);
+            combinationSumDfs(candidates, target - candidates[i], res, path, i + 1);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    @Test
+    public void combine() {
+        List<List<Integer>> res = combine(4, 2);
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        combineDfs(n, k, res, path, 1);
+        return res;
+    }
+
+    private void combineDfs(int n, int k, List<List<Integer>> res, List<Integer> path, int start) {
+        if (path.size() == k) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            path.add(i);
+            combineDfs(n, k, res, path, i + 1);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    @Test
+    public void subsets() {
+        List<List<Integer>> res = subsets(new int[]{1, 2, 3});
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        subsetsDfs(nums, res, path, 0);
+        return res;
+    }
+
+    private void subsetsDfs(int[] nums, List<List<Integer>> res, List<Integer> path, int start) {
+        res.add(new ArrayList<>(path));
+        for (int i = start; i < nums.length; i++) {
+            path.add(nums[i]);
+            subsetsDfs(nums, res, path, i + 1);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    @Test
+    public void subsets2() {
+        List<List<Integer>> res = subsets2(new int[]{1, 2, 1});
+        System.out.println(ListUtils.toString(res));
+    }
+
+    public List<List<Integer>> subsets2(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        Arrays.sort(nums);
+        subsets2Dfs(nums, res, path, 0);
+        return res;
+    }
+
+    private void subsets2Dfs(int[] nums, List<List<Integer>> res, List<Integer> path, int start) {
+        res.add(new ArrayList<>(path));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            path.add(nums[i]);
+            subsets2Dfs(nums, res, path, i + 1);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    @Test
+    public void getPermutation() {
+        System.out.println(getPermutation(3, 3));
+    }
+
+    public String getPermutation(int n, int k) {
+        int[] memo = calc(n);
+        StringBuilder builder = new StringBuilder();
+
+        return builder.toString();
+    }
+
+    private int[] calc(int n) {
+        int[] memo = new int[n + 1];
+        memo[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            memo[i] = memo[i - 1] * i;
+        }
+        return memo;
     }
 }
