@@ -1237,6 +1237,23 @@ public class Review01 {
         }
     }
 
+    public void rotate2(int[] nums, int k) {
+        k %= nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int tmp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = tmp;
+            start++;
+            end--;
+        }
+    }
+
     @Test
     public void permute() {
         List<List<Integer>> res = permute(new int[]{1, 2, 3});
@@ -1419,22 +1436,430 @@ public class Review01 {
 
     @Test
     public void getPermutation() {
-        System.out.println(getPermutation(3, 3));
+        System.out.println(getPermutation(4, 20));
     }
 
     public String getPermutation(int n, int k) {
-        int[] memo = calc(n);
+        LinkedList<Integer> list = new LinkedList<>();
+        int[] factor = new int[n];
+        factor[0] = 1;
+        for (int i = 1; i < n; i++) {
+            factor[i] = factor[i - 1] * i;
+        }
+        for (int i = 1; i <= n; i++) {
+            list.add(i);
+        }
+        k--;
         StringBuilder builder = new StringBuilder();
-
+        for (int i = n - 1; i >= 0; i--) {
+            int index = k / factor[i];
+            int num = list.remove(index);
+            builder.append(num);
+            k -= index * factor[i];
+        }
         return builder.toString();
     }
 
-    private int[] calc(int n) {
-        int[] memo = new int[n + 1];
-        memo[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            memo[i] = memo[i - 1] * i;
+    @Test
+    public void floodFill() {
+        int[][] image = new int[][] {{1,1,1},{1,1,0},{1,0,1}};
+        int[][] res = floodFill(image, 1, 1, 2);
+        ArrayUtils.print(res);
+    }
+
+    private int[][] directs = new int[][] {
+            {0, 1}, {0, -1}, {1, 0}, {-1, 0}
+    };
+
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        if (!inArea(image, sr, sc)) {
+            return image;
         }
-        return memo;
+        if (image[sr][sc] != 1) {
+            return image;
+        }
+        image[sr][sc] = newColor;
+        for (int[] d : directs) {
+            floodFill(image, sr + d[0], sc + d[1], newColor);
+        }
+        return image;
+    }
+
+    private boolean inArea(int[][] image, int sr, int sc) {
+        return sr >= 0 && sr < image.length && sc >= 0 && sc < image[0].length;
+    }
+
+    @Test
+    public void numIslands() {
+        System.out.println(numIslands(new char[][] {
+                {'1','1','1','1','0'},
+                {'1','1','0','1','0'},
+                {'1','1','0','0','0'},
+                {'0','0','0','0','0'}
+        }));
+        System.out.println(numIslands(new char[][] {
+                {'1','1','0','0','0'},
+                {'1','1','0','0','0'},
+                {'0','0','1','0','0'},
+                {'0','0','0','1','1'}
+        }));
+    }
+
+    public int numIslands(char[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        int[][] directs = new int[][] {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        int count = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1' && !visited[i][j]) {
+                    numIslandsDfs(i, j, grid, visited, directs);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void numIslandsDfs(int i, int j, char[][] grid, boolean[][] visited, int[][] directs) {
+        if (!inArea(i, j, grid)) {
+            return;
+        }
+        if (grid[i][j] == '0') {
+            return;
+        }
+        if (visited[i][j]) {
+            return;
+        }
+        visited[i][j] = true;
+        for (int[] d : directs) {
+            numIslandsDfs(i + d[0], j + d[1], grid, visited, directs);
+        }
+    }
+
+    private boolean inArea(int i, int j, char[][] grid) {
+        return i >= 0 && i < grid.length && j >= 0 && j < grid[0].length;
+    }
+
+    @Test
+    public void islandPerimeter() {
+        System.out.println(islandPerimeter(new int[][] {
+                {0,1,0,0},
+                {1,1,1,0},
+                {0,1,0,0},
+                {1,1,0,0}
+        }));
+    }
+
+    public int islandPerimeter(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    return islandPerimeterDfs(i, j, grid, visited);
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int islandPerimeterDfs(int i, int j, int[][] grid, boolean[][] visited) {
+        if (!inArea(grid, i, j)) {
+            return 1;
+        }
+        if (visited[i][j]) {
+            return 0;
+        }
+        if (grid[i][j] == 0) {
+            return 1;
+        }
+        visited[i][j] = true;
+        int res = 0;
+        for (int[] d : directs) {
+            res += islandPerimeterDfs(i + d[0], j + d[1], grid, visited);
+        }
+        return res;
+    }
+
+    @Test
+    public void maxAreaOfIsland() {
+        System.out.println(maxAreaOfIsland(new int[][] {
+                {0,0,1,0,0,0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,1,1,1,0,0,0},
+                {0,1,1,0,1,0,0,0,0,0,0,0,0},
+                {0,1,0,0,1,1,0,0,1,0,1,0,0},
+                {0,1,0,0,1,1,0,0,1,1,1,0,0},
+                {0,0,0,0,0,0,0,0,0,0,1,0,0},
+                {0,0,0,0,0,0,0,1,1,1,0,0,0},
+                {0,0,0,0,0,0,0,1,1,0,0,0,0}
+        }));
+        System.out.println(maxAreaOfIsland(new int[][] {
+                {0,0,0,0,0,0,0,0,0}
+        }));
+    }
+
+    public int maxAreaOfIsland(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        int max = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1 && !visited[i][j]) {
+                    int area = maxAreaOfIslandDfs(i, j, grid, visited);
+                    max = Math.max(max, area);
+                }
+            }
+        }
+        return max;
+    }
+
+    private int maxAreaOfIslandDfs(int i, int j, int[][] grid, boolean[][] visited) {
+        if (!inArea(grid, i, j)) {
+            return 0;
+        }
+        if (visited[i][j]) {
+            return 0;
+        }
+        if (grid[i][j] == 0) {
+            return 0;
+        }
+        visited[i][j] = true;
+        int res = 1;
+        for (int[] d : directs) {
+            res += maxAreaOfIslandDfs(i + d[0], j + d[1], grid, visited);
+        }
+        return res;
+    }
+
+    @Test
+    public void openLock() {
+        System.out.println(openLock(new String[] {"0201","0101","0102","1212","2002"}, "0202"));
+    }
+
+    public int openLock(String[] deadends, String target) {
+        Set<String> visited = new HashSet<String>(Arrays.asList(deadends));
+        if (visited.contains(target)) {
+            return -1;
+        }
+        int step = 0;
+        LinkedList<String> queue = new LinkedList<>();
+        queue.offer("0000");
+        visited.add("0000");
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String curr = queue.poll();
+                if (curr.equals(target)) {
+                    return step;
+                }
+                for (int j = 0; j < 4; j++) {
+                    String up = rollUp(curr, j);
+                    if (!visited.contains(up)) {
+                        queue.offer(up);
+                        visited.add(up);
+                    }
+                    String down = rollDown(curr, j);
+                    if (!visited.contains(down)) {
+                        queue.offer(down);
+                        visited.add(down);
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+
+    private String rollUp(String str, int i) {
+        char[] chars = str.toCharArray();
+        if (chars[i] == '9') {
+            chars[i] = '0';
+        } else {
+            chars[i] += 1;
+        }
+        return new String(chars);
+    }
+
+    private String rollDown(String str, int i) {
+        char[] chars = str.toCharArray();
+        if (chars[i] == '0') {
+            chars[i] = '9';
+        } else {
+            chars[i] -= 1;
+        }
+        return new String(chars);
+    }
+
+    @Test
+    public void unionFindTest() {
+        UnionFind uf = new UnionFind(5);
+        uf.union(1, 2);
+        uf.print();
+        uf.union(3, 4);
+        uf.print();
+        uf.union(1, 3);
+        uf.print();
+        System.out.println(uf.connected(1, 3));
+    }
+
+    private static class UnionFind {
+        int[] parent;
+        int[] sizes;
+        int count;
+
+        public UnionFind(int n) {
+            this.parent = new int[n];
+            this.sizes = new int[n];
+            for (int i = 0; i < parent.length; i++) {
+                parent[i] = i;
+                sizes[i] = 1;
+            }
+            count = n;
+        }
+
+        public void union(int i, int j) {
+            i = findRoot(i);
+            j = findRoot(j);
+            if (sizes[i] > sizes[j]) {
+                parent[j] = i;
+                sizes[i] += sizes[j];
+            } else {
+                parent[i] = j;
+                sizes[j] += sizes[i];
+            }
+            count--;
+        }
+
+        public boolean connected(int i, int j) {
+            return findRoot(i) == findRoot(j);
+        }
+
+        private int findRoot(int i) {
+            while (i != parent[i]) {
+                parent[i] = parent[parent[i]];
+                i = parent[i];
+            }
+            return i;
+        }
+
+        public int count() {
+            return count;
+        }
+
+        public void print() {
+            System.out.println("count=" + count);
+            for (int i = 0; i < parent.length; i++) {
+                int x = i;
+                System.out.print(i);
+                while (x != parent[x]) {
+                    x = parent[x];
+                    System.out.print(" -> " + x);
+                }
+                System.out.println(", size=" + sizes[x]);
+            }
+        }
+    }
+
+    public boolean equationsPossible(String[] equations) {
+        UnionFind uf = new UnionFind(equations.length * 2);
+        for (String equation : equations) {
+            if (equation.charAt(1) != '!') {
+                char a = equation.charAt(0);
+                char b = equation.charAt(3);
+                uf.union(a - 'a', b - 'b');
+            }
+        }
+        for (String equation : equations) {
+            if (equation.charAt(1) == '!') {
+                char a = equation.charAt(0);
+                char b = equation.charAt(3);
+                if (!uf.connected(a - 'a', b - 'b')) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static class MyQueue {
+        LinkedList<Integer> stack1 = new LinkedList<Integer>();
+        LinkedList<Integer> stack2 = new LinkedList<Integer>();
+
+        /** Initialize your data structure here. */
+        public MyQueue() {
+
+        }
+
+        /** Push element x to the back of queue. */
+        public void push(int x) {
+            stack1.push(x);
+        }
+
+        /** Removes the element from in front of queue and returns that element. */
+        public int pop() {
+            if (stack2.isEmpty()) {
+                transform();
+            }
+            return stack2.pop();
+        }
+
+        private void transform() {
+            while (!stack1.isEmpty()) {
+                stack2.push(stack1.pop());
+            }
+        }
+
+        /** Get the front element. */
+        public int peek() {
+            if (stack2.isEmpty()) {
+                transform();
+            }
+            return stack2.peek();
+        }
+
+        /** Returns whether the queue is empty. */
+        public boolean empty() {
+            return stack1.isEmpty() && stack2.isEmpty();
+        }
+    }
+
+    class MyStack {
+        Queue<Integer> queue;
+
+        /** Initialize your data structure here. */
+        public MyStack() {
+            queue = new LinkedList<Integer>();
+        }
+
+        /** Push element x onto stack. */
+        public void push(int x) {
+            queue.offer(x);
+            int size = queue.size();
+            for (int i = 0; i < size - 1; i++) {
+                queue.offer(queue.poll());
+            }
+        }
+
+        /** Removes the element on top of the stack and returns that element. */
+        public int pop() {
+            return queue.poll();
+        }
+
+        /** Get the top element. */
+        public int top() {
+            return queue.peek();
+        }
+
+        /** Returns whether the stack is empty. */
+        public boolean empty() {
+            return queue.isEmpty();
+        }
     }
 }
