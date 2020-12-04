@@ -64,8 +64,8 @@ public class _004_findMedianSortedArrays {
         int i = left;
         int j = leftCount - i;
         int leftMax1 = i == 0 ? Integer.MIN_VALUE : nums1[i - 1];
-        int rightMin1 = i == m ? Integer.MAX_VALUE : nums1[i];
         int leftMax2 = j == 0 ? Integer.MIN_VALUE : nums2[j - 1];
+        int rightMin1 = i == m ? Integer.MAX_VALUE : nums1[i];
         int rightMin2 = j == n ? Integer.MAX_VALUE : nums2[j];
         if ((m + n) % 2 == 0) {
             return (double) (Math.max(leftMax1, leftMax2) + Math.min(rightMin1, rightMin2)) / 2;

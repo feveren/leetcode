@@ -1862,4 +1862,438 @@ public class Review01 {
             return queue.isEmpty();
         }
     }
+
+    @Test
+    public void lengthOfLIS() {
+        System.out.println(lengthOfLIS(new int[] {10,9,2,5,3,7,101,18}));
+    }
+
+    public int lengthOfLIS(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, 1);
+        int res = dp[0];
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    @Test
+    public void maxSubArray() {
+        System.out.println(maxSubArray(new int[] {-2,1,-3,4,-1,2,1,-5,4}));
+    }
+
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        int res = dp[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (dp[i - 1] > 0) {
+                dp[i] = dp[i - 1] + nums[i];
+            } else {
+                dp[i] = nums[i];
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    @Test
+    public void longestPalindrome() {
+        System.out.println(longestPalindrome("babad"));
+    }
+
+    public String longestPalindrome(String s) {
+        char[] chars = s.toCharArray();
+        int start = 0;
+        int length = -1;
+        for (int i = 0; i < chars.length - 1; i++) {
+            int[] res1 = getLongest(i, i, chars);
+            int[] res2 = getLongest(i, i + 1, chars);
+            int[] res = res1[1] > res2[1] ? res1 : res2;
+            if (res[1] > length) {
+                start = res[0];
+                length = res[1];
+            }
+        }
+        return s.substring(start, length);
+    }
+
+    private int[] getLongest(int left, int right, char[] chars) {
+        while (left >= 0 && right < chars.length&& chars[left] == chars[right]) {
+            left--;
+            right++;
+        }
+        return new int[] {left + 1, right - left - 1};
+    }
+
+    @Test
+    public void longestPalindromeSubseq() {
+        System.out.println(longestPalindromeSubseq("bbbab"));
+    }
+
+    public int longestPalindromeSubseq(String s) {
+        int length = s.length();
+        int[][] dp = new int[length][length];
+        for (int i = 0; i < length; i++) {
+            dp[i][i] = 1;
+        }
+        for (int i = length - 2; i >= 0; i--) {
+            for (int j = i + 1; j < length; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[0][length - 1];
+    }
+
+    @Test
+    public void minDistance() {
+        System.out.println(minDistance("horse", "ros"));
+        System.out.println(minDistance("intention", "execution"));
+    }
+
+    public int minDistance(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 0; i <= n; i++) {
+            dp[0][i] = i;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    @Test
+    public void wordBreak() {
+        System.out.println(wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
+        System.out.println(wordBreak("leetcode", Arrays.asList("leet", "code")));
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> dict = new HashSet<>(wordDict);
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= i; j++) {
+                dp[i] = dp[j] && dict.contains(s.substring(j, i));
+                if (dp[i]) {
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    @Test
+    public void minCut() {
+        System.out.println(minCut("aab"));
+        System.out.println(minCut("leet"));
+    }
+
+    public int minCut(String s) {
+        int n = s.length();
+        boolean[][] memo = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            memo[i][i] = true;
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i <= 2) {
+                        memo[i][j] = true;
+                    } else {
+                        memo[i][j] = memo[i + 1][j - 1];
+                    }
+                }
+            }
+        }
+        int[] dp = new int[n];
+        for (int i = 1; i < n; i++) {
+            if (memo[0][i]) {
+                dp[i] = 0;
+                continue;
+            }
+            dp[i] = i;
+            for (int j = 1; j <= i; j++) {
+                if (memo[j][i]) {
+                    dp[i] = Math.min(dp[i], dp[j - 1] + 1);
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+
+    @Test
+    public void backbag() {
+        System.out.println(backbag(10, new int[] {2, 3, 5, 7}, new int[] {1, 5, 2, 4}));
+        System.out.println(backbag(10, new int[] {2, 3, 8}, new int[] {2, 5, 8}));
+    }
+
+    public int backbag(int w, int[] weights, int[] values) {
+        int n = weights.length;
+        int[][] dp = new int[n + 1][w + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= w; j++) {
+                if (j >= weights[i - 1]) {
+                    dp[i][j] = Math.max(dp[i - 1][j], values[i - 1] + dp[i - 1][j - weights[i - 1]]);
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n][w];
+    }
+
+    @Test
+    public void canPartition() {
+        System.out.println(canPartition(new int[] {1, 5, 11, 5}));
+        System.out.println(canPartition(new int[] {1, 2, 3, 5}));
+    }
+
+    public boolean canPartition(int[] nums) {
+        int count = 0;
+        for (int num : nums) {
+            count += num;
+        }
+        if (count % 2 != 0) {
+            return false;
+        }
+        int n = nums.length;
+        count /= 2;
+        boolean[][] dp = new boolean[n + 1][count + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = true;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= count; j++) {
+                if (j >= nums[i - 1]) {
+                    dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i - 1]];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n][count];
+    }
+
+    @Test
+    public void change() {
+        System.out.println(change(5, new int[] {1, 2, 5}));
+    }
+
+    public int change(int amount, int[] coins) {
+        int n = coins.length;
+        int[][] dp = new int[n + 1][amount + 1];
+        for (int i = 0; i < dp.length; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= amount; j++) {
+                if (j >= coins[i - 1]) {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n][amount];
+    }
+
+    @Test
+    public void minPathSum() {
+        System.out.println(minPathSum(new int[][] {{1,3,1},{1,5,1},{4,2,1}}));
+        System.out.println(minPathSum(new int[][] {{1,2,3},{4,5,6}}));
+    }
+
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = grid[0][0];
+                } else {
+                    int top = i > 0 ? dp[i - 1][j] : Integer.MAX_VALUE;
+                    int left = j > 0 ? dp[i][j - 1] : Integer.MAX_VALUE;
+                    dp[i][j] = Math.min(top, left) + grid[i][j];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test
+    public void uniquePaths() {
+        System.out.println(uniquePaths(3, 2)); // 3
+        System.out.println(uniquePaths(7, 3)); // 28
+    }
+
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test
+    public void uniquePathsWithObstacles() {
+        System.out.println(uniquePathsWithObstacles(new int[][] {{0,0,0},{0,1,0},{0,0,0}}));
+        System.out.println(uniquePathsWithObstacles(new int[][] {{0,1},{0,0}}));
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            if (obstacleGrid[i][0] == 1) {
+                break;
+            }
+            dp[i][0] = 1;
+        }
+        for (int i = 0; i < n; i++) {
+            if (obstacleGrid[0][i] == 1) {
+                break;
+            }
+            dp[0][i] = 1;
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    continue;
+                }
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test
+    public void canJump() {
+        System.out.println(canJump(new int[] {2,3,1,1,4}));
+        System.out.println(canJump(new int[] {3,2,1,0,4}));
+    }
+
+    public boolean canJump(int[] nums) {
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            max = Math.max(nums[i] + i, max);
+            if (max == i) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Test
+    public void jump() {
+        System.out.println(jump(new int[] {2,3,1,1,4}));
+    }
+
+    public int jump(int[] nums) {
+        int max = 0;
+        int end = 0;
+        int step = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            max = Math.max(nums[i] + i, max);
+            if (i == end) {
+                end = max;
+                step++;
+            }
+        }
+        return step;
+    }
+
+    @Test
+    public void threeSum() {
+        System.out.println(Arrays.toString(threeSum(new int[] {1, 3, 5, 7, 4, 6}, 17)));
+    }
+
+    public int[] threeSum(int[] nums, int sum) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        for (int i = 0; i < n - 2; i++) {
+            int target = sum - nums[i];
+            int left = i + 1;
+            int right = n - 1;
+            while (left < right) {
+                int total = nums[left] + nums[right];
+                if (total > target) {
+                    right--;
+                } else if (total < target) {
+                    left++;
+                } else {
+                    return new int[] {nums[i], nums[left], nums[right]};
+                }
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void findMedianSortedArrays() {
+        System.out.println(findMedianSortedArrays(new int[] {1, 2}, new int[] {3, 4}));
+    }
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        if (m > n) {
+            return findMedianSortedArrays(nums1, nums2);
+        }
+        int total = m + (n - m + 1) / 2;
+        int left = 0;
+        int right = m;
+        while (left < right) {
+            int i = left + (right - left + 1) / 2;
+            int j = total - i;
+            if (nums1[i - 1] > nums2[j]) {
+                right = i - 1;
+            } else {
+                left = i;
+            }
+        }
+        int i = left;
+        int j = total - left;
+        int leftMax1 = i > 0 ? nums1[i - 1] : Integer.MIN_VALUE;
+        int leftMax2 = j > 0 ? nums2[j - 1] : Integer.MIN_VALUE;
+        int rightMin1 = i < m ? nums1[i] : Integer.MAX_VALUE;
+        int rightMin2 = j < n ? nums2[j] : Integer.MAX_VALUE;
+        if ((m + n) % 2 == 0) {
+            return (double) (Math.max(leftMax1, leftMax2) + Math.min(rightMin1, rightMin2)) / 2;
+        }
+        return Math.max(leftMax1, leftMax2);
+    }
 }
