@@ -50,9 +50,13 @@ public class TreeUtils {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
                 TreeNode node = queue.poll();
-                if (node.left == null && node.right == null) {
+                if (node == null) {
+                    builder.append("null");
+                }
+                else if (node.left == null && node.right == null) {
                     builder.append(node.val);
-                } else {
+                }
+                else {
                     builder.append(node.val + "(");
                     if (node.left != null) {
                         queue.offer(node.left);
