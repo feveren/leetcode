@@ -7,7 +7,9 @@ import rent.utils.NodeUtils;
 import rent.utils.TreeUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Review03 {
     @Test
@@ -162,7 +164,7 @@ public class Review03 {
             }
         }
         int i = left;
-        int j = leftCount - left;
+        int j = leftCount - i;
         int leftMax1 = i - 1 >= 0 ? nums1[i - 1] : Integer.MIN_VALUE;
         int leftMax2 = j - 1 >= 0 ? nums2[j - 1] : Integer.MIN_VALUE;
         int rightMin1 = i < m ? nums1[i] : Integer.MAX_VALUE;
@@ -180,20 +182,19 @@ public class Review03 {
     }
 
     private int trap(int[] nums) {
-        int n = nums.length;
         int left = 0;
-        int right = n - 1;
+        int right = nums.length - 1;
         int leftMax = nums[left];
         int rightMax = nums[right];
         int count = 0;
-        while (left <= right) {
-            leftMax = Math.max(leftMax, nums[left]);
-            rightMax = Math.max(rightMax, nums[right]);
+        while (left < right) {
+            leftMax = Math.max(nums[left], leftMax);
+            rightMax = Math.max(nums[right], rightMax);
             if (leftMax < rightMax) {
                 count += leftMax - nums[left];
                 left++;
             } else {
-                count += rightMax - nums[right];
+                count+= rightMax - nums[right];
                 right--;
             }
         }
@@ -207,28 +208,28 @@ public class Review03 {
         System.out.println(Arrays.toString(array));
     }
 
-    private void quickSort(int[] nums, int left, int right) {
+    private void quickSort(int[] array, int left, int right) {
         if (left >= right) {
             return;
         }
-        int mid = partition(nums, left, right);
-        quickSort(nums, left, mid);
-        quickSort(nums, mid + 1, right);
+        int mid = partition(array, left, right);
+        quickSort(array, left, mid - 1);
+        quickSort(array, mid + 1, right);
     }
 
-    private int partition(int[] nums, int left, int right) {
-        int target = nums[left];
+    private int partition(int[] array, int left, int right) {
+        int target = array[left];
         while (left < right) {
-            while (left < right && nums[right] >= target) {
+            while (left < right && array[right] >= target) {
                 right--;
             }
-            nums[left] = nums[right];
-            while (left < right && nums[left] <= target) {
+            array[left] = array[right];
+            while (left < right && array[left] <= target) {
                 left++;
             }
-            nums[right] = nums[left];
+            array[right] = array[left];
         }
-        nums[left] = target;
+        array[left] = target;
         return left;
     }
 
@@ -394,5 +395,123 @@ public class Review03 {
             builder.append(res[i]);
         }
         return builder.toString();
+    }
+
+    @Test
+    public void minDistance() {
+        System.out.println(minDistance("horse", "ros"));
+        System.out.println(minDistance("intention", "execution"));
+    }
+
+    public int minDistance(String a, String b) {
+        int m = a.length();
+        int n = b.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 1; i <= n; i++) {
+            dp[0][i] = i;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (a.charAt(i - 1) == b.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min(dp[i - 1][j - 1], dp[i][j - 1], dp[i - 1][j]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    private int min(int a, int b, int c) {
+        return Math.min(a, Math.min(b, c));
+    }
+
+    @Test
+    public void superEggDrop() {
+        System.out.println(superEggDrop(1, 2));
+        System.out.println(superEggDrop(2, 6));
+        System.out.println(superEggDrop(3, 14));
+    }
+
+    public int superEggDrop(int k, int n) {
+        return superEggDrop(n, k, new int[n + 1][k + 1]);
+    }
+
+    public int superEggDrop(int n, int k, int[][] memo) {
+        if (k == 1) {
+            return n;
+        }
+        if (k == 0 || n == 0) {
+            return 0;
+        }
+        if (memo[n][k] > 0) {
+            return memo[n][k];
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i = 1; i <= n; i++) {
+            int notBroken = superEggDrop(n - i, k, memo);
+            int broken = superEggDrop(i - 1, k - 1, memo);
+            int count = Math.max(notBroken, broken) + 1;
+            res = Math.min(count, res);
+        }
+        memo[n][k] = res;
+        return res;
+    }
+
+    @Test
+    public void minWindow() {
+        String src = "ADOBECODEBANC";
+        String target = "ABC";
+//        String src = "a";
+//        String target = "aa";
+        System.out.println(minWindow(src, target));
+    }
+
+    public String minWindow(String s, String t) {
+        Map<Character, Integer> need = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            int count = need.getOrDefault(c, 0);
+            need.put(c, count + 1);
+        }
+        Map<Character, Integer> window = new HashMap<>();
+        int left = 0;
+        int right = 0;
+        int valid = 0;
+        int start = -1, maxLength = Integer.MAX_VALUE;
+        while (right < s.length()) {
+            char add = s.charAt(right);
+            if (need.containsKey(add)) {
+                int count = window.getOrDefault(add, 0) + 1;
+                window.put(add, count);
+                if (count == need.get(add)) {
+                    valid++;
+                }
+            }
+            while (valid == need.size()) {
+                int len = right - left;
+                if (len < maxLength) {
+                    start = left;
+                    maxLength = len;
+                }
+                char remove = s.charAt(left);
+                if (need.containsKey(remove)) {
+                    int count = window.get(remove);
+                    if (count == need.get(remove)) {
+                        valid--;
+                    }
+                    window.put(remove, count - 1);
+                }
+                left++;
+            }
+            right++;
+        }
+        if (start < 0) {
+            return "";
+        }
+        return s.substring(start, start + maxLength + 1);
     }
 }

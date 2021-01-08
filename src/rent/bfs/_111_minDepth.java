@@ -1,5 +1,7 @@
 package rent.bfs;
 
+import rent.model.TreeNode;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -32,17 +34,41 @@ public class _111_minDepth {
 //        headRight.left = new TreeNode(15);
 //        headRight.right = new TreeNode(7);
 
-        TreeNode head = new TreeNode(1);
-        head.left = new TreeNode(2);
+//        TreeNode head = new TreeNode(1);
+//        head.left = new TreeNode(2);
+//        head.right = new TreeNode(3);
+//        TreeNode headLeft = head.left;
+//        headLeft.left = new TreeNode(4);
+//        headLeft.right = new TreeNode(5);
+
+        TreeNode head = new TreeNode(2);
         head.right = new TreeNode(3);
-        TreeNode headLeft = head.left;
-        headLeft.left = new TreeNode(4);
-        headLeft.right = new TreeNode(5);
+        TreeNode headRight = head.right;
+        headRight.right = new TreeNode(4);
+        headRight = headRight.right;
+        headRight.right = new TreeNode(5);
+        headRight = headRight.right;
+        headRight.right = new TreeNode(6);
 
         System.out.println(minDepth(head));
     }
 
     public static int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return 1;
+        }
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+        if (left == 0 || right == 0) {
+            return Math.max(left, right) + 1;
+        }
+        return Math.min(left, right) + 1;
+    }
+
+    public static int minDepth2(TreeNode root) {
         if (root == null) {
             return 0;
         }
@@ -66,15 +92,5 @@ public class _111_minDepth {
             depth++;
         }
         return depth;
-    }
-
-    public static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-
-        TreeNode(int x) {
-            val = x;
-        }
     }
 }
