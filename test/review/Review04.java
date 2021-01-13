@@ -1390,4 +1390,338 @@ public class Review04 {
         }
         return dp[n - 1];
     }
+
+    @Test // TODO
+    public void wordBreak() {
+        System.out.println(wordBreak("leetcode", Arrays.asList("leet", "code")));
+        System.out.println(wordBreak("applepenapple", Arrays.asList("apple", "pen")));
+        System.out.println(wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
+    }
+
+    private boolean wordBreak(String str, List<String> list) {
+        Set<String> dict = new HashSet<>(list);
+        int n = str.length();
+        boolean[] dp = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j >= 0; j--) {
+                String s = str.substring(j, i + 1);
+                if (dict.contains(s)) {
+                    dp[i] = j == 0 || dp[j - 1];
+                }
+                if (dp[i]) {
+                    break;
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+
+    @Test
+    public void minPathSum() {
+        int[][] matrix = new int[][]{
+                {1, 3, 1},
+                {1, 5, 1},
+                {4, 2, 1}
+        };
+        System.out.println(minPathSum(matrix));
+    }
+
+    private int minPathSum(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] dp = new int[m][n];
+        dp[0][0] = matrix[0][0];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int top = i == 0 ? 0 : dp[i - 1][j];
+                int left = j == 0 ? 0 : dp[i][j - 1];
+                dp[i][j] = Math.max(top, left) + matrix[i][j];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test
+    public void uniquePaths() {
+        System.out.println(uniquePaths(3, 2));
+        System.out.println(uniquePaths(7, 3));
+    }
+
+    private int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test
+    public void uniquePathsWithObstacles() {
+        int[][] obstacleGrid = new int[][]{
+                {0,0,0},
+                {0,1,0},
+                {0,0,0}
+        };
+        System.out.println(uniquePathsWithObstacles(obstacleGrid));
+
+        obstacleGrid = new int[][]{
+                {0, 0},
+                {1, 1},
+                {0, 0}
+        };
+        System.out.println(uniquePathsWithObstacles(obstacleGrid));
+    }
+
+    private int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[i][j] = 0;
+                    continue;
+                }
+                if (i == 0 && j == 0) {
+                    dp[i][j] = 1;
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1];
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i][j - 1] + dp[i - 1][j];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    @Test // TODO
+    public void pick() {
+        System.out.println(pick(3, 4, new int[] {2, 1, 3}, new int[] {4, 2, 3}));
+    }
+
+    private int pick(int maxSize, int maxWeight, int[] weight, int[] values) {
+        int[][] dp = new int[maxSize + 1][maxWeight + 1];
+        for (int i = 1; i <= maxSize; i++) {
+            for (int j = 1; j <= maxWeight; j++) {
+                if (weight[i - 1] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - weight[i - 1]] + values[i - 1]);
+                }
+            }
+        }
+        return dp[maxSize][maxWeight];
+    }
+
+    @Test // TODO
+    public void canPartition() {
+        System.out.println(canPartition(new int[] {1, 5, 11, 5}));
+        System.out.println(canPartition(new int[] {1, 2, 3, 5}));
+    }
+
+    private boolean canPartition(int[] nums) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum % 2 != 0) {
+            return false;
+        }
+        sum = sum / 2;
+        int n = nums.length;
+        boolean[][] dp = new boolean[n + 1][sum + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = true;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= sum; j++) {
+                if (nums[i - 1] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i - 1]];
+                }
+            }
+        }
+        return dp[n][sum];
+    }
+
+    @Test // TODO
+    public void coinChange() {
+        System.out.println(coinChange(new int[] { 1, 2, 5 }, 11));
+        System.out.println(coinChange(new int[] { 2 }, 3));
+    }
+
+    private int coinChange(int[] coins, int sum) {
+        int n = coins.length;
+        int[][] dp = new int[n + 1][sum + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 1; j <= sum; j++) {
+                dp[i][j] = sum + 1;
+            }
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= sum; j++) {
+                if (coins[i - 1] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = Math.min(dp[i][j - coins[i - 1]] + 1, dp[i - 1][j]);
+                }
+            }
+        }
+        return dp[n][sum] == sum + 1 ? -1 : dp[n][sum];
+    }
+
+    @Test
+    public void coinChange2() {
+        System.out.println(coinChange2(5, new int[] {1, 2, 5}));
+        System.out.println(coinChange2(3, new int[] {2}));
+        System.out.println(coinChange2(10, new int[] {10}));
+    }
+
+    private int coinChange2(int sum, int[] coins) {
+        int n = coins.length;
+        int[][] dp = new int[n + 1][sum + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= sum; j++) {
+                if (coins[i - 1] > j) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
+                }
+            }
+        }
+        return dp[n][sum];
+    }
+
+    @Test // TODO
+    public void trap() {
+        System.out.println(trap(new int[] {0,1,0,2,1,0,1,3,2,1,2,1}));
+        System.out.println(trap(new int[] {4,2,0,3,2,5}));
+    }
+
+    private int trap(int[] array) {
+        int n = array.length;
+        int left = 0;
+        int right = n - 1;
+        int leftMax = array[left];
+        int rightMax = array[right];
+        int sum = 0;
+        // <=
+        while (left <= right) {
+            leftMax = Math.max(leftMax, array[left]);
+            rightMax = Math.max(rightMax, array[right]);
+            if (leftMax < rightMax) {
+                sum += leftMax;
+                left++;
+            } else {
+                sum += rightMax;
+                right--;
+            }
+        }
+        return sum;
+    }
+
+    @Test // TODO
+    public void superEggDrop() {
+        System.out.println(superEggDrop(1, 2));
+        System.out.println(superEggDrop(2, 6));
+        System.out.println(superEggDrop(3, 14));
+    }
+
+    public int superEggDrop(int K, int N) {
+        return superEggDrop(K, N, new int[K + 1][N + 1]);
+    }
+
+    public int superEggDrop(int K, int N, int[][] memo) {
+        if (K == 1) {
+            return N;
+        }
+        if (K == 0 || N == 0) {
+            return 0;
+        }
+        if (memo[K][N] > 0) {
+            return memo[K][N];
+        }
+        int sum = Integer.MAX_VALUE;
+        for (int i = 1; i <= N; i++) {
+            int broken = superEggDrop(K - 1, i - 1, memo) + 1;
+            int notBroken = superEggDrop(K, N - i, memo) + 1;
+            sum = Math.min(sum, Math.max(broken, notBroken));
+        }
+        memo[K][N] = sum;
+        return sum;
+    }
+
+    @Test
+    public void minDistance() {
+        System.out.println(minDistance("horse", "ros"));
+        System.out.println(minDistance("intention", "execution"));
+    }
+
+    private int minDistance(String src, String dst) {
+        int m = src.length();
+        int n = dst.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 1; i <= n; i++) {
+            dp[0][i] = i;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (src.charAt(i - 1) == dst.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    private int min(int a, int b, int c) {
+        return Math.min(Math.min(a, b), c);
+    }
+
+    @Test // TODO
+    public void mul() {
+        System.out.println(mul("123", "321"));
+    }
+
+    private String mul(String str1, String str2) {
+        int m = str1.length();
+        int n = str2.length();
+        int[] res = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            int a = str1.charAt(i) - '0';
+            for (int j = n - 1; j >= 0; j--) {
+                int b = str2.charAt(j) - '0';
+                int value = a * b + res[i + j + 1];
+                res[i + j + 1] = value % 10;
+                res[i + j] += value / 10;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        boolean removeZero = true;
+        for (int i : res) {
+            if (i == 0 && removeZero) {
+                continue;
+            }
+            removeZero = false;
+            builder.append(i);
+        }
+        return builder.toString();
+    }
 }
