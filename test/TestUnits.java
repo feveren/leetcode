@@ -1,27 +1,37 @@
 import org.junit.Test;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class TestUnits {
+
     @Test
     public void testProducer() {
-        AlbumDataCallback<String> callback = new AlbumDataCallback<>();
-        Type type = ((ParameterizedType) callback.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        Class returnType = (Class)type;
-        System.out.println(type);
+        Class<Base> clazz = Base.class;
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            System.out.println(method.getName() + " " + Arrays.toString(method.getParameterTypes()));
+        }
     }
 
-    public abstract class HttpCallBack<T> {
+    static class Base {
+        public void baseTest() {
 
+        }
     }
 
-    public class AlbumDataCallback<T> extends HttpCallBack<T> {
+    static class Child extends Base {
+        public void childTest() {
 
-    }
+        }
 
-    public class AlbumStringCallback extends AlbumDataCallback<String> {
+        public void childTest2() {
 
+        }
+
+        private void childTest3() {
+
+        }
     }
 
     @Test
