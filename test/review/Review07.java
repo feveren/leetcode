@@ -408,7 +408,7 @@ public class Review07 {
         boolean reverse = false;
         while (!queue.isEmpty()) {
             int size = queue.size();
-            List<Integer> list = new ArrayList<>(size);
+            LinkedList<Integer> list = new LinkedList<>();
             for (int i = 0; i < size; i++) {
                 TreeNode node = queue.poll();
                 if (node.left != null) {
@@ -417,10 +417,11 @@ public class Review07 {
                 if (node.right != null) {
                     queue.offer(node.right);
                 }
-                list.add(node.val);
-            }
-            if (reverse) {
-                Collections.reverse(list);
+                if (reverse) {
+                    list.addFirst(node.val);
+                } else {
+                    list.addLast(node.val);
+                }
             }
             reverse = !reverse;
             result.add(list);
@@ -554,5 +555,236 @@ public class Review07 {
         }
         array[left] = target;
         return left;
+    }
+
+    @Test
+    public void reverse() {
+        System.out.println(reverse(13));
+    }
+
+    public int reverse(int num) {
+        System.out.println(Integer.toString(num, 2) + " " + Integer.bitCount(num));
+        int result = 0;
+        int count = 0;
+        while (num > 0) {
+            result <<= 1;
+            result = (num & 1) | result;
+            num >>= 1;
+            count++;
+        }
+        result <<= 31 - count;
+        System.out.println(Integer.toString(result, 2));
+        return result;
+    }
+
+    @Test // TODO
+    public void maxDepth() {
+        TreeNode head = new TreeNode(3);
+        head.left = new TreeNode(9);
+        TreeNode left = head.left;
+        left.left = new TreeNode(15);
+
+        System.out.println(maxDepth(head));
+        System.out.println(minDepth(head));
+    }
+
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return Math.max(left, right) + 1;
+    }
+
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return 1;
+        }
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+        if (left == 0) {
+            return right + 1;
+        }
+        if (right == 0) {
+            return left + 1;
+        }
+        return Math.min(left, right) + 1;
+    }
+
+    @Test // TODO
+    public void isBalanced() {
+        TreeNode node = TreeUtils.buildTree(new Integer[]{3, 9, 20, null, null, 15, 7});
+        System.out.println(isBalance(node));
+
+        node = TreeUtils.buildTree(new Integer[]{1, 2, 2, 3, 3, null, null, 4, 4});
+        System.out.println(isBalance(node));
+    }
+
+    public int isBalance(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = isBalance(root.left);
+        if (left == -1) {
+            return -1;
+        }
+        int right = isBalance(root.right);
+        if (right == -1) {
+            return -1;
+        }
+        if (Math.abs(left - right) > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+
+    @Test
+    public void maxPathSum() {
+        TreeNode node = TreeUtils.buildTree(new Integer[]{-10, 9, 20, null, null, 15, 7});
+        System.out.println(maxPathSum(node));
+
+        node = TreeUtils.buildTree(new Integer[]{-10, 2, 3});
+        System.out.println(maxPathSum(node));
+    }
+
+    private int mMax;
+
+    public int maxPathSum(TreeNode root) {
+        mMax = 0;
+        maxPathSumInternal(root);
+        return mMax;
+    }
+
+    public int maxPathSumInternal(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = Math.max(0, maxPathSumInternal(root.left));
+        int right = Math.max(0, maxPathSumInternal(root.right));
+        mMax = Math.max(mMax, left + right + root.val);
+        return Math.max(left, right) + root.val;
+    }
+
+    @Test
+    public void lowestCommonAncestor() {
+        TreeNode node = TreeUtils.buildTree(new Integer[]{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4});
+        TreeNode p = TreeUtils.findNode(node, 5);
+        TreeNode q = TreeUtils.findNode(node, 1);
+        System.out.println(lowestCommonAncestor(node, p, q));
+
+        node = TreeUtils.buildTree(new Integer[]{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4});
+        p = TreeUtils.findNode(node, 5);
+        q = TreeUtils.findNode(node, 4);
+        System.out.println(lowestCommonAncestor(node, p, q));
+    }
+
+    private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        }
+        if (left != null) {
+            return left;
+        }
+        if (right != null) {
+            return right;
+        }
+        return null;
+    }
+
+    @Test
+    public void testCodec() {
+        TreeSerialize codec = new TreeSerialize();
+        TreeNode treeNode = TreeUtils.buildTree(new Integer[]{1, 2, 3, null, null, 4, 5, null, null, null, null, 6, 7});
+        System.out.println(codec.serialize(treeNode));
+        System.out.println(TreeUtils.toString(codec.deserialize("1,2,null,null,3,4,6,null,null,7,null,null,5,null,null")));
+    }
+
+    public class TreeSerialize {
+        public String serialize(TreeNode root) {
+            StringBuilder builder = new StringBuilder();
+            serialize(root, builder);
+            if (builder.length() > 0) {
+                builder.deleteCharAt(builder.length() - 1);
+            }
+            return builder.toString();
+        }
+
+        private void serialize(TreeNode root, StringBuilder builder) {
+            if (root == null) {
+                builder.append("null").append(",");
+                return;
+            }
+            builder.append(root.val).append(",");
+            serialize(root.left, builder);
+            serialize(root.right, builder);
+        }
+
+        public TreeNode deserialize(String text) {
+            String[] array = text.split(",");
+            return deserialize(array, new int[] {0});
+        }
+
+        private TreeNode deserialize(String[] array, int[] index) {
+            if (index[0] >= array.length) {
+                return null;
+            }
+            String s = array[index[0]];
+            index[0]++;
+            if ("null".equals(s)) {
+                return null;
+            }
+            TreeNode root = new TreeNode(Integer.parseInt(s));
+            root.left = deserialize(array, index);
+            root.right = deserialize(array, index);
+            return root;
+        }
+    }
+
+    @Test // TODO
+    public void findMedianSortedArrays() {
+        System.out.println(findMedianSortedArrays(new int[]{1, 3}, new int[]{2, 4}));
+        System.out.println(findMedianSortedArrays(new int[]{1, 3}, new int[]{2}));
+    }
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+        int leftCount = m + (n - m + 1) / 2;
+        int left = 0;
+        int right = m;
+        while (left < right) {
+            int i = left + (right - left + 1) / 2;
+            int j = leftCount - i;
+            if (nums1[i - 1] > nums2[j]) {
+                right = i - 1;
+            } else {
+                left = i;
+            }
+        }
+        int i = left;
+        int j = leftCount - i;
+        int leftMax1 = i - 1 >= 0 ? nums1[i - 1] : Integer.MIN_VALUE;
+        int leftMax2 = j - 1 >= 0 ? nums2[j - 1] : Integer.MIN_VALUE;
+        int rightMin1 = i < m ? nums1[i] : Integer.MAX_VALUE;
+        int rightMin2 = j < n ? nums2[j] : Integer.MAX_VALUE;
+        if ((m + n) % 2 == 0) {
+            return (double) (Math.max(leftMax1, leftMax2) + Math.min(rightMin1, rightMin2)) / 2;
+        }
+        return Math.max(leftMax1, leftMax2);
     }
 }
