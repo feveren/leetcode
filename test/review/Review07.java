@@ -787,4 +787,53 @@ public class Review07 {
         }
         return Math.max(leftMax1, leftMax2);
     }
+
+    @Test
+    public void findRepeatNumber() {
+        System.out.println(findRepeatNumber(new int[] {2, 3, 1, 0, 2, 5, 3}));
+    }
+
+    private int findRepeatNumber(int[] nums) {
+        int i = 0;
+        while (i < nums.length) {
+            int curr = nums[i];
+            if (curr == i) {
+                i++;
+                continue;
+            }
+            if (nums[curr] == curr) {
+                return curr;
+            }
+            ArrayUtils.swap(nums, curr, i);
+        }
+        return -1;
+    }
+
+    @Test
+    public void longestConsecutive() {
+        System.out.println(longestConsecutive(new int[]{0, 3, 7, 2, 5, 8, 4, 6, 0, 1}));
+        System.out.println(longestConsecutive(new int[]{100, 4, 200, 1, 3, 2}));
+    }
+
+    private int longestConsecutive(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int max = 0;
+        for (int curr : nums) {
+            if (map.containsKey(curr)) {
+                continue;
+            }
+            int left = map.getOrDefault(curr - 1, 0);
+            int right = map.getOrDefault(curr + 1, 0);
+            max = Math.max(max, left + right + 1);
+            if (left > 0) {
+                map.put(curr - left, max);
+            }
+            if (right > 0) {
+                map.put(curr + right, max);
+            }
+            map.put(curr, max);
+        }
+        return max;
+    }
+
 }
